@@ -54,6 +54,10 @@ export default class Chat extends React.Component {
           avatar: "https://placeimg.com/140/140/any"
         }
       });
+      this.refMsgsUser = firebase
+                .firestore()
+                .collection('messages')
+                .where('uid', '==', this.state.uid);
 
       this.unsubscribe = this.referenceChatMessages
         .orderBy("createdAt", "desc")
@@ -96,6 +100,7 @@ export default class Chat extends React.Component {
   addMessages() {
     const message = this.state.messages[0];
     this.referenceChatMessages.add({
+      uid: this.state.uid,
       _id: message._id,
       text: message.text || "",
       createdAt: message.createdAt,
@@ -137,7 +142,9 @@ export default class Chat extends React.Component {
             messages={this.state.messages}
             onSend={messages => this.onSend(messages)}
             user={{
-              _id: 1,
+              _id: this.state.user._id,
+              name: this.state.name,
+              avatar: this.state.user.avatar 
             }}
           />
           { Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
