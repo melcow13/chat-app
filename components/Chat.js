@@ -84,16 +84,6 @@ export default class Chat extends React.Component {
     });
   }
 
-  componentWillUnmount() {
-    if (this.state.isConnected) {
-      // stop listening to authentication
-      this.authUnsubscribe();
-      // stop listening for changes
-      this.unsubscribe();
-    }
-  }
-
-
   addMessages() {
     const message = this.state.messages[0];
     this.referenceChatMessages.add({
@@ -113,6 +103,14 @@ export default class Chat extends React.Component {
     })
   }
 
+  componentWillUnmount() {
+    if (this.state.isConnected) {
+      // stop listening to authentication
+      this.authUnsubscribe();
+      // stop listening for changes
+      this.unsubscribe();
+    }
+  }
   renderBubble(props) {
     return (
       <Bubble
