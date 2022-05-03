@@ -4,43 +4,37 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat'
 import * as firebase from 'firebase';
 import "firebase/firestore";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDPgLC7Qyh1--wSN0BHpVnAobZMHIRHSRk",
-  authDomain: "chatapp-78c69.firebaseapp.com",
-  projectId: "chatapp-78c69",
-  storageBucket: "chatapp-78c69.appspot.com",
-  messagingSenderId: "183180350158",
-  appId: "1:183180350158:web:260d16d0edc6501f7a769f",
-  measurementId: "G-28XT9KBNF6"
-};
+
 
 export default class Chat extends React.Component {
   constructor() {
     super();
     this.state = {
       messages: [],
+      uid: 0,
+      user: {
+        _id: "",
+        name: "",
+        avatar: "",
+      }
     }
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDPgLC7Qyh1--wSN0BHpVnAobZMHIRHSRk",
+      authDomain: "chatapp-78c69.firebaseapp.com",
+      projectId: "chatapp-78c69",
+      storageBucket: "chatapp-78c69.appspot.com",
+      messagingSenderId: "183180350158",
+      appId: "1:183180350158:web:260d16d0edc6501f7a769f",
+      measurementId: "G-28XT9KBNF6"
+    };
+
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
 
     this.referenceChatMessages = firebase.firestore().collection("messages");
 
-  }
-
-  onCollectionUpdate = (querySnapshot) => {
-    const messages = [];
-    // go through each document
-    querySnapshot.forEach((doc) => {
-      // get the QueryDocumentSnapshot's data
-      let data = doc.data();
-      messages.push({
-        _id: data._id,
-        text: data.text,
-        createdAt: data.createdAt.toDate(),
-        user: data.user,
-      });
-    });
   }
 
   componentDidMount() {
@@ -54,10 +48,38 @@ export default class Chat extends React.Component {
       this.setState({
         uid: user.uid,
         messages: [],
+        user: {
+          _id: user.uid,
+          name: name,
+          avatar: "https://placeimg.com/140/140/any"
+        }
       });
+
       this.unsubscribe = this.referenceChatMessages
         .orderBy("createdAt", "desc")
         .onSnapshot(this.onCollectionUpdate);
+    });
+  }
+
+  onCollectionUpdate = (querySnapshot) => {
+    const messages = [];
+    // go through each document
+    querySnapshot.forEach((doc) => {
+      // get the QueryDocumentSnapshot's data
+      let data = doc.data();
+      messages.push({
+        _id: data._id,
+        text: data.text,
+        createdAt: data.createdAt.toDate(),
+        user: {
+          _id: data.user._id,
+          name: data.user.name,
+          avatar: data.user.avatar
+        }
+      });
+    });
+    this.setState({
+      messages: messages
     });
   }
 
@@ -78,15 +100,15 @@ export default class Chat extends React.Component {
       text: message.text || "",
       createdAt: message.createdAt,
       user: this.state.user,
-      image: message.image || "",
-      location: message.location || null,
     });
   }
 
   onSend(messages = []) {
-    this.setState(previousState => ({
+    this.setState((previousState) => ({
       messages: GiftedChat.append(previousState.messages, messages),
-    }))
+    }), () => {
+      this.addMessage();
+    })
   }
 
   renderBubble(props) {
