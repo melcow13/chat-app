@@ -41,6 +41,7 @@ export default class Chat extends React.Component {
     const name = this.props.route.params.name;
     this.props.navigation.setOptions({ title: name});
 
+      //authentication
     this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
         firebase.auth().signInAnonymously();
@@ -54,10 +55,6 @@ export default class Chat extends React.Component {
           avatar: "https://placeimg.com/140/140/any"
         }
       });
-      this.refMsgsUser = firebase
-                .firestore()
-                .collection('messages')
-                .where('uid', '==', this.state.uid);
 
       this.unsubscribe = this.referenceChatMessages
         .orderBy("createdAt", "desc")
@@ -112,7 +109,7 @@ export default class Chat extends React.Component {
     this.setState((previousState) => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }), () => {
-      this.addMessage();
+      this.addMessages();
     })
   }
 
