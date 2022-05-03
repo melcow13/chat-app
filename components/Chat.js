@@ -47,7 +47,7 @@ export default class Chat extends React.Component {
     const name = this.props.route.params.name;
     this.props.navigation.setOptions({ title: name});
 
-    his.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+    this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
         firebase.auth().signInAnonymously();
       }
