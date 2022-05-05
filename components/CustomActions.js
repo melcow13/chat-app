@@ -15,7 +15,7 @@ export default class CustomActions extends React.Component {
         try {
           if (status === "granted") {
             let result = await ImagePicker.launchImageLibraryAsync({
-              mediaTypes: 'images',
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
             });
             if (!result.cancelled) {
               const imageUrl = await this.uploadImageFetch(result.uri);
