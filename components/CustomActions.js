@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import firebase from "firebase";
+import * as firebase from 'firebase';
 import "firebase/firestore";
 
 
@@ -15,9 +15,7 @@ export default class CustomActions extends React.Component {
         try {
           if (status === "granted") {
             let result = await ImagePicker.launchImageLibraryAsync({
-              mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            }).catch((error) => {
-              console.error(error);
+              mediaTypes: 'images',
             });
             if (!result.cancelled) {
               const imageUrl = await this.uploadImageFetch(result.uri);
@@ -127,16 +125,12 @@ export default class CustomActions extends React.Component {
 
     render() {
         return (
-            <TouchableOpacity
-            accessible={true}
-            accessibilityLabel="More options"
-            accessibilityHint="Let's you choose to send an image or your geolocation."
-            style={[styles.container]} onPress={this.onActionPress}>
-            <View style={[styles.wrapper, this.props.wrapperStyle]}>
-              <Text style={[styles.iconText, this.props.iconTextStyle]}>+</Text>
-            </View>
-          </TouchableOpacity>
-        );
+            <TouchableOpacity style={[styles.container]} onPress={this.onActionPress}>
+              <View style={[styles.wrapper, this.props.wrapperStyle]}>
+                <Text style={[styles.iconText, this.props.iconTextStyle]}>+</Text>
+              </View>
+            </TouchableOpacity>
+          );
     }
 }
 
