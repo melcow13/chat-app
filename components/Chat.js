@@ -3,7 +3,7 @@ import { View, Platform, KeyboardAvoidingView } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat'
 import * as firebase from 'firebase';
 import "firebase/firestore";
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import CustomActions from './CustomActions';
 import MapView from 'react-native-maps';
